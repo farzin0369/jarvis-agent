@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '0 6 * * *'
   workflow_dispatch:
+    inputs:
+      prompt:
+        description: 'پیام شما به جارویس'
+        required: false
+        default: 'سلام جارویس، یک گزارش روزانه کوتاه بده.'
   repository_dispatch:
 
 jobs:
@@ -26,5 +31,5 @@ jobs:
       - name: Run Jarvis
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          PROMPT: ${{ github.event.client_payload.prompt || 'سلام جارویس، یک گزارش روزانه کوتاه بده.' }}
+          PROMPT: ${{ github.event.inputs.prompt || github.event.client_payload.prompt || 'سلام جارویس، یک گزارش روزانه کوتاه بده.' }}
         run: python main.py
