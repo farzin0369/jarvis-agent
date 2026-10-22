@@ -1,12 +1,15 @@
 import json
 import os
 from openai import OpenAI
+import time
 from dotenv import load_dotenv
 
 load_dotenv()
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
     api_key=os.getenv("OPENROUTER_API_KEY"),
+    timeout=12.0,
+    max_retries=0,
 )
 
 SYSTEM_PROMPT = (
@@ -20,7 +23,6 @@ def ask_jarvis(prompt: str, history: list[dict] | None = None) -> str:
         "minimax/minimax-m3.1-flash:free",
         "google/gemma-4-26b-a4b-it:free",
         "nvidia/nemotron-3-super-120b-a12b:free",
-        "openrouter/free",
     ]
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
     for item in (history or [])[-24:]:
@@ -33,16 +35,19 @@ def ask_jarvis(prompt: str, history: list[dict] | None = None) -> str:
     last_error = None
     for model in models:
         try:
+            started = time.monotonic()
             response = client.chat.completions.create(
                 model=model,
                 messages=messages,
-                max_tokens=1600,
+                max_tokens=700,
                 temperature=0.4,
             )
-            return response.choices[0].message.content or "پاسخی دریافت نشد."
+            answer = response.choices[0].message.content or "پاسخی دریافت نشد."
+            print(f"مدل {model} پاسخ را در {time.monotonic() - started:.1f} ثانیه داد.")
+            return answer
         except Exception as exc:
             last_error = exc
-            print(f"مدل {model} در دسترس نبود؛ تلاش با مدل بعدی...")
+            print(f"مدل {model} سریع پاسخ نداد یا در دسترس نبود؛ تلاش با مدل بعدی...")
     raise last_error
 
 
