@@ -1,5 +1,4 @@
 name: Jarvis Agent
-
 on:
   schedule:
     - cron: '0 6 * * *'
@@ -9,27 +8,41 @@ on:
         description: 'پیام شما به جارویس'
         required: false
         default: 'سلام جارویس، یک گزارش روزانه کوتاه بده.'
+        type: string
+      history:
+        description: 'سابقه گفتگو برای رابط چت'
+        required: false
+        default: '[]'
+        type: string
   repository_dispatch:
-
 jobs:
   run-agent:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Run Jarvis
+      - name: Ask Jarvis
+        id: jarvis
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          PROMPT: ${{ github.event.inputs.prompt || github.event.client_payload.prompt || 'سلام جارویس، یک گزارش روزانه کوتاه بده.' }}
-        run: python main.py
+          PROMPT: ${{ inputs.prompt || github.event.client_payload.prompt || 'سلام جارویس، یک گزارش روزانه کوتاه بده.' }}
+          HISTORY: ${{ inputs.history || '[]' }}
+        run: |
+          set -o pipefail
+          python main.py | tee response.txt
+          {
+            echo '## پاسخ Jarvis'
+            echo
+            cat response.txt
+          } >> "$GITHUB_STEP_SUMMARY"
