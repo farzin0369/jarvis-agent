@@ -17,12 +17,12 @@
 
 ## رابط چت وب
 
-فایل `chat.html` یک رابط چت فارسی است که پیام‌ها را با `workflow_dispatch` به همین مخزن می‌فرستد و پاسخ هر اجرا را از Check Summary می‌خواند. تاریخچهٔ گفتگو در مرورگر نگه‌داری می‌شود؛ هر پیام تازه همراه با بخش اخیر تاریخچه به workflow می‌رود.
+فایل `index.html` (و نسخهٔ مستقیم `chat.html`) رابط چت فارسی است که پیام‌ها را با `workflow_dispatch` به همین مخزن می‌فرستد و پاسخ هر اجرا را از Check Summary می‌خواند. تاریخچهٔ گفتگو در مرورگر نگه‌داری می‌شود؛ هر پیام تازه همراه با بخش اخیر تاریخچه به workflow می‌رود.
 
 ### فعال‌سازی
 
 1. در **Settings → Pages**، بخش **Build and deployment** را روی **Deploy from a branch** بگذار، شاخهٔ `main` و پوشهٔ `/(root)` را انتخاب کن و ذخیره کن.
-2. پس از انتشار Pages، صفحهٔ گفتگو در `https://farzin0369.github.io/jarvis-agent/chat.html` در دسترس است.
+2. پس از انتشار Pages، صفحهٔ گفتگو در `https://farzin0369.github.io/jarvis-agent/` در دسترس است.
 3. مطمئن شو در **Settings → Secrets and variables → Actions**، secret به نام `OPENROUTER_API_KEY` تنظیم شده است.
 4. در صفحهٔ چت، از دکمهٔ تنظیمات یک **Fine-grained personal access token** بساز که فقط به این مخزن دسترسی داشته باشد و مجوزهای **Actions: Read and write** و **Checks: Read-only** را داشته باشد. توکن در `localStorage` همین مرورگر ذخیره می‌شود و با پاک‌کردن داده‌های سایت یا دکمهٔ حذف توکن قابل حذف است.
 
