@@ -47,3 +47,22 @@ jobs:
             echo
             cat response.txt
           } >> "$GITHUB_STEP_SUMMARY"
+      - name: Publish response for chat
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const response = fs.readFileSync('response.txt', 'utf8');
+            await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'Jarvis response',
+              head_sha: context.sha,
+              status: 'completed',
+              conclusion: 'success',
+              output: {
+                title: 'پاسخ Jarvis',
+                summary: response
+              }
+            });
