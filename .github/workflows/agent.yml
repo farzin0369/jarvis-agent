@@ -59,6 +59,7 @@ jobs:
               repo: context.repo.repo,
               name: 'Jarvis response',
               head_sha: context.sha,
+              external_id: String(context.runId),
               status: 'completed',
               conclusion: 'success',
               output: {

@@ -2,6 +2,7 @@ import json
 import os
 from openai import OpenAI
 import time
+import sys
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -43,7 +44,7 @@ def ask_jarvis(prompt: str, history: list[dict] | None = None) -> str:
                 temperature=0.4,
             )
             answer = response.choices[0].message.content or "پاسخی دریافت نشد."
-            print(f"مدل {model} پاسخ را در {time.monotonic() - started:.1f} ثانیه داد.")
+            print(f"مدل {model} پاسخ را در {time.monotonic() - started:.1f} ثانیه داد.", file=sys.stderr)
             return answer
         except Exception as exc:
             last_error = exc
